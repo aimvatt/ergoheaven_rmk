@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-k04-custom:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -54,7 +54,7 @@ jobs:
       - name: Build left / central
         working-directory: keyboards/k04
         env:
-          BINDGEN_EXTRA_CLANG_ARGS: "--sysroot=/usr/lib/arm-none-eabi --target=arm-none-eabi -I/usr/lib/arm-none-eabi/include -I/usr/lib/gcc/arm-none-eabi/13.2.1/include"
+          BINDGEN_EXTRA_CLANG_ARGS: "--sysroot=/usr/lib/arm-none-eabi --target=arm-none-eabi -I/usr/lib/arm-none-eabi/include -I/usr/lib/gcc/arm-none-eabi/12.3.1/include"
           KEYBOARD_TOML_PATH: ${{ github.workspace }}/keyboards/k04/keyboard.toml
           RUST_MIN_STACK: "33554432"
           VIAL_JSON_PATH: ${{ github.workspace }}/keyboards/k04/vial.json
@@ -63,7 +63,7 @@ jobs:
       - name: Build right / peripheral
         working-directory: keyboards/k04
         env:
-          BINDGEN_EXTRA_CLANG_ARGS: "--sysroot=/usr/lib/arm-none-eabi --target=arm-none-eabi -I/usr/lib/arm-none-eabi/include -I/usr/lib/gcc/arm-none-eabi/13.2.1/include"
+          BINDGEN_EXTRA_CLANG_ARGS: "--sysroot=/usr/lib/arm-none-eabi --target=arm-none-eabi -I/usr/lib/arm-none-eabi/include -I/usr/lib/gcc/arm-none-eabi/12.3.1/include"
           KEYBOARD_TOML_PATH: ${{ github.workspace }}/keyboards/k04/keyboard.toml
           RUST_MIN_STACK: "33554432"
           VIAL_JSON_PATH: ${{ github.workspace }}/keyboards/k04/vial.json
