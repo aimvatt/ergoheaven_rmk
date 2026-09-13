@@ -14,7 +14,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Apply Precision Touchpad patch
-        run: python3 scripts/k04_precision_touchpad_patch.py
+        run: |
+          python3 scripts/k04_precision_touchpad_patch.py
+          python3 scripts/k04_precision_touchpad_fix_axisval.py
 
       - name: Format patched Rust
         run: |
