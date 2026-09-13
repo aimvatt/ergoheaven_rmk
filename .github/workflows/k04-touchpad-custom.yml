@@ -1,4 +1,4 @@
-name: Build K04 Custom Touchpad Firmware
+name: Build K04 Custom Touchpad Firmware v2
 
 on:
   push:
@@ -13,8 +13,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply custom touchpad patch
-        run: python3 scripts/k04_touchpad_custom_patch.py
+      - name: Apply minimal native-scroll patch
+        run: python3 scripts/k04_touchpad_custom_patch_v2.py
 
       - name: Format patched Rust
         run: |
@@ -37,7 +37,7 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-k04-custom-${{ hashFiles('keyboards/k04/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-k04-custom-v2-${{ hashFiles('keyboards/k04/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-k04-
             ${{ runner.os }}-cargo-
@@ -47,12 +47,8 @@ jobs:
 
       - name: Download UF2 converter
         run: |
-          curl -fL --retry 5 --retry-delay 5 \
-            https://raw.githubusercontent.com/microsoft/uf2/master/utils/uf2conv.py \
-            -o uf2conv.py
-          curl -fL --retry 5 --retry-delay 5 \
-            https://raw.githubusercontent.com/microsoft/uf2/master/utils/uf2families.json \
-            -o uf2families.json
+          curl -fL --retry 5 --retry-delay 5 https://raw.githubusercontent.com/microsoft/uf2/master/utils/uf2conv.py -o uf2conv.py
+          curl -fL --retry 5 --retry-delay 5 https://raw.githubusercontent.com/microsoft/uf2/master/utils/uf2families.json -o uf2families.json
           chmod +x uf2conv.py
 
       - name: Build left / central
@@ -76,21 +72,16 @@ jobs:
       - name: Convert firmware to UF2
         working-directory: keyboards/k04
         run: |
-          arm-none-eabi-objcopy -O binary target/thumbv7em-none-eabihf/release/central k04_custom_left.bin
-          python3 ../../uf2conv.py k04_custom_left.bin \
-            --base 0x26000 --family 0xADA52840 \
-            --output k04_custom_left.uf2
-
-          arm-none-eabi-objcopy -O binary target/thumbv7em-none-eabihf/release/peripheral k04_custom_right.bin
-          python3 ../../uf2conv.py k04_custom_right.bin \
-            --base 0x26000 --family 0xADA52840 \
-            --output k04_custom_right.uf2
+          arm-none-eabi-objcopy -O binary target/thumbv7em-none-eabihf/release/central k04_custom_v2_left.bin
+          python3 ../../uf2conv.py k04_custom_v2_left.bin --base 0x26000 --family 0xADA52840 --output k04_custom_v2_left.uf2
+          arm-none-eabi-objcopy -O binary target/thumbv7em-none-eabihf/release/peripheral k04_custom_v2_right.bin
+          python3 ../../uf2conv.py k04_custom_v2_right.bin --base 0x26000 --family 0xADA52840 --output k04_custom_v2_right.uf2
 
       - name: Upload custom K04 firmware
         uses: actions/upload-artifact@v4
         with:
-          name: k04-custom-touchpad
+          name: k04-custom-touchpad-v2
           path: |
-            keyboards/k04/k04_custom_left.uf2
-            keyboards/k04/k04_custom_right.uf2
+            keyboards/k04/k04_custom_v2_left.uf2
+            keyboards/k04/k04_custom_v2_right.uf2
           retention-days: 30
